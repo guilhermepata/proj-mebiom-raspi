@@ -5,27 +5,33 @@ from imageai.Detection import ObjectDetection
 import os
 
 
-def continuous_capture(interval: float = 30, duration: float = 60, attempts: int = 960) -> None:
+def continuous_capture(interval: float = 30, duration: float = 60, attempts: int = 960, repeat: bool = True) -> list[str]:
     """
     Captures and detects images continuously with the given interval.
-    When it detects a person, it starts recording during the given duration.
     After the given number of attempts, it gives up.
+    When it detects a person, it starts recording for the given duration.
+    If repeat is set to True, the function runs again after recording.
     :param interval: interval (in seconds) during which the function is paused
     :param duration: duration (in seconds) of the recorded video
     :param attempts: number of attempts at detecting a person (default is roughly 8h of attempts)
+    :param repeat: whether or not to try and record again
+    :return: file names of the recorded videos (emtpy list if nothing was recorded)
     """
     detected = False
     while not detected and attempts > 0:
         filename = capture_image()
-        detected = detect(filename) > 0
+        detected = detect_people(filename) > 0
         sleep(interval)
         attempts = attempts - 1
     if detected:
-        capture_video(duration)
-    return detected
+        videoname = record_video(duration)
+        if repeat:
+            names = continuous_capture(interval=interval, duration=duration, attempts=attempts, repeat=repeat)
+        return [videoname]+names
+    return []
 
 
-def capture_video(duration: float = 60, preview: bool = False) -> str:
+def record_video(duration: float = 60, preview: bool = False) -> str:
     """
     Records a video for the given duration and saves it as video_<current date & time>.jpg
     :param duration: duration (in seconds) of the recorded video
@@ -69,7 +75,7 @@ def capture_image(preview: bool = False) -> str:
     return filename
 
 
-def detect(filename: str) -> int:
+def detect_people(filename: str) -> int:
     """
     Runs tensorflow object detection in the image given by filename.
     Returns the number of people detected.
