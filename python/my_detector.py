@@ -19,8 +19,9 @@ from datetime import datetime
 from imageai.Detection import ObjectDetection
 import os
 
+camera = PiCamera()
 
-def continuous_capture(interval: float = 30, duration: float = 60, attempts: int = 960, repeat: bool = True) -> list[str]:
+def continuous_capture(interval: float = 30, duration: float = 60, attempts: int = 960, repeat: bool = True):
     """
     Captures and detects images continuously with the given interval.
     After the given number of attempts, it gives up.
@@ -40,6 +41,7 @@ def continuous_capture(interval: float = 30, duration: float = 60, attempts: int
         attempts = attempts - 1
     if detected:
         videoname = record_video(duration)
+        names=[]
         if repeat:
             names = continuous_capture(interval=interval, duration=duration, attempts=attempts, repeat=repeat)
         return [videoname]+names
@@ -57,16 +59,17 @@ def record_video(duration: float = 60, preview: bool = False) -> str:
     now = str(datetime.now())
     now = now.split('.')[0]
     now = '_' + now.split(' ')[0] + '_' + now.split(' ')[1]
-    camera = PiCamera()
+    print('recording');
     if preview:
         camera.start_preview()
-    filename = 'video' + now + '.jpg'
+    filename = 'video' + now + '.h264'
     camera.start_recording(filename)
     sleep(duration)
     camera.stop_recording()
     print(filename + ' was captured.')
     if preview:
         camera.stop_preview
+    print('done recording');
     return filename
 
 
@@ -80,11 +83,11 @@ def capture_image(preview: bool = False) -> str:
     now = str(datetime.now())
     now = now.split('.')[0]
     now = '_' + now.split(' ')[0] + '_' + now.split(' ')[1]
-    camera = PiCamera()
+    
     if preview:
         camera.start_preview()
     filename = 'image' + now + '.jpg'
-    camera.capture_image(filename)
+    camera.capture(filename)
     print(filename + ' was captured.')
     if preview:
         camera.stop_preview()
