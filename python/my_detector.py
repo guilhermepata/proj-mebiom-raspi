@@ -1,13 +1,17 @@
 # pre-requisites:
-
+#
 # pip install picamera
 # pip install tensorflow==1.13.1
 # pip install opencv-python
 # pip install keras==2.2.4
 # pip install numpy==1.16.1
 # pip install imageai --upgrade
-
-# code adapted from: https://towardsdatascience.com/object-detection-with-10-lines-of-code-d6cb4d86f606
+#
+# download this file into current directory:
+# https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_coco_best_v2.0.1.h5
+#
+# code adapted from:
+# https://towardsdatascience.com/object-detection-with-10-lines-of-code-d6cb4d86f606
 
 from picamera import PiCamera
 from time import sleep
