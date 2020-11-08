@@ -1,3 +1,14 @@
+# pre-requisites:
+
+# pip install picamera
+# pip install tensorflow==1.13.1
+# pip install opencv-python
+# pip install keras==2.2.4
+# pip install numpy==1.16.1
+# pip install imageai --upgrade
+
+# code adapted from: https://towardsdatascience.com/object-detection-with-10-lines-of-code-d6cb4d86f606
+
 from picamera import PiCamera
 from time import sleep
 from datetime import datetime
@@ -28,7 +39,8 @@ def continuous_capture(interval: float = 30, duration: float = 60, attempts: int
         if repeat:
             names = continuous_capture(interval=interval, duration=duration, attempts=attempts, repeat=repeat)
         return [videoname]+names
-    return []
+    else:
+        return []
 
 
 def record_video(duration: float = 60, preview: bool = False) -> str:
